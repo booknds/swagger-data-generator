@@ -1,0 +1,37 @@
+{
+  "name": "swagger-data-generator",
+  "version": "0.0.1",
+  "description": "Generate mock data for a swagger document.",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/booknds/swagger-data-generator.git"
+  },
+  "keywords": [
+    "swagger",
+    "mock",
+    "data",
+    "generate",
+    "generator",
+    "openAPI"
+  ],
+  "author": "Eric Henry Correia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/booknds/swagger-data-generator/issues"
+  },
+  "homepage": "https://github.com/booknds/swagger-data-generator#readme",
+  "dependencies": {
+    "json-schema-faker": "^0.3.1",
+    "json-schema-mock": "0.0.8",
+    "mocker-data-generator": "^1.2.2",
+    "swagger-parser": "^3.4.1",
+    "yamljs": "^0.2.7"
+  },
+  "bin": {
+    "sdg": "index.js"
+  }
+}
