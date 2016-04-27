@@ -16,7 +16,7 @@ function makeAllPropertiesRequired(apiDefinitions) {
   });
 }
 
-SwaggerParser.parse('./PetStore.yaml')
+SwaggerParser.parse('./samples/PetStore.yaml')
   .then(function (api) {
     swaggerDoc = api;
     // console.log("parsing", swaggerDoc);
