@@ -23,7 +23,7 @@ definitions:
         type: integer
       dob:
         type: string
-        format: 'date'
+        format: "date"
       type:
         type: string
         enum: [cat, dog, bird]

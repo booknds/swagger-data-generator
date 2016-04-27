@@ -26,13 +26,18 @@
   "homepage": "https://github.com/booknds/swagger-data-generator#readme",
   "dependencies": {
     "json-schema-faker": "^0.3.1",
-    "json-schema-mock": "0.0.8",
     "lodash": "^4.11.1",
-    "mocker-data-generator": "^1.2.2",
-    "swagger-parser": "^3.4.1",
-    "yamljs": "^0.2.7"
+    "swagger-parser": "^3.4.1"
   },
   "bin": {
     "sdg": "index.js"
+  },
+  "devDependencies": {
+    "eslint": "^2.8.0",
+    "eslint-config-airbnb": "^8.0.0",
+    "eslint-plugin-import": "^1.6.0",
+    "eslint-plugin-jsx": "0.0.2",
+    "eslint-plugin-jsx-a11y": "^1.0.3",
+    "eslint-plugin-react": "^5.0.1"
   }
 }
