@@ -1,35 +1,58 @@
 #! /usr/bin/env node
 
-var _             = require('lodash'),
-    SwaggerParser = require('swagger-parser'),
-    jsf           = require('./lib/jsfConfig.js'),
-    swaggerDoc;
+const _ = require('lodash');
+const SwaggerParser = require('swagger-parser');
+const jsf = require('./lib/jsfConfig.js');
 
-function makeAllPropertiesRequired(apiDefinitions) {
-  var apiProperties = apiDefinitions.map(function (definitionPair) {
-    return Object.keys(definitionPair.properties);
-  });
+/**
+ * allPropsRequired - Creates a new definitions object. Each definintion is updated
+ *                      to require all of its properties. This makes sure that JSON-Schema-Faker
+ *                      populates data for each property of a definition
+ *
+ * @param definitions {Object}  - the definitions object of a swagger doc
+ * @returns           {Object}  - a new definitions object
+ */
+function allPropsRequired(definitions) {
+  const definitionPairs = _.toPairs(definitions);
+  const apiProperties = definitionPairs
+    .map(definitionPair => Object.keys(definitionPair[1].properties));
 
-  apiDefinitions.forEach(function (definition, index) {
-    definition.required = apiProperties[index];
-    return definition;
-  });
+
+  const newDefinitionsCollection = definitionPairs
+    // adds or overwrites the required property of each definition object
+    .map((definitionPair, index) => {
+      const definitionKey = definitionPair[0];
+      const definitionValue = Object.assign({}, definitionPair[1]);
+
+      definitionValue.required = apiProperties[index];
+
+      return [definitionKey, definitionValue];
+    })
+    .reduce((definitionsObject, definitionPair) => {
+      const key = definitionPair[0];
+      const value = definitionPair[1];
+      const passedDefinitions = definitionsObject;
+      passedDefinitions[key] = value;
+
+      return passedDefinitions;
+    }, {});
+
+  return newDefinitionsCollection;
 }
 
 SwaggerParser.parse('./samples/PetStore.yaml')
-  .then(function (api) {
-    swaggerDoc = api;
-    // console.log("parsing", swaggerDoc);
-    makeAllPropertiesRequired(_.values(swaggerDoc.definitions));
+  .then(api => {
+    const swaggerDoc = api;
+
+    swaggerDoc.definitions = allPropsRequired(swaggerDoc.definitions);
     return SwaggerParser.dereference(swaggerDoc);
   })
-  .then(function (api) {
-    // console.log(api.definitions.pet.properties);
-    _.forEach(api.definitions, function (definition) {
-      // console.log(definition);
+  .then(api => {
+    _.forEach(api.definitions, definition => {
+      let temp;
       try {
-        var temp = jsf(definition);
-        console.log("jsf", temp);
+        temp = jsf(definition);
+        console.log('jsf', temp);
       } catch (err) {
         console.log(err);
       }
