@@ -1,60 +1,67 @@
 #! /usr/bin/env node
 
-const _ = require('lodash');
+const fs = require('fs');
+const readline = require('readline');
+const { forEach } = require('lodash');
 const SwaggerParser = require('swagger-parser');
 const jsf = require('./lib/jsfConfig.js');
+const { requireAllProperties } = require('./lib/utils/helpers.js');
 
-/**
- * allPropsRequired - Creates a new definitions object. Each definintion is updated
- *                      to require all of its properties. This makes sure that JSON-Schema-Faker
- *                      populates data for each property of a definition
- *
- * @param definitions {Object}  - the definitions object of a swagger doc
- * @returns           {Object}  - a new definitions object
- */
-function allPropsRequired(definitions) {
-  const definitionPairs = _.toPairs(definitions);
-  const apiProperties = definitionPairs
-    .map(definitionPair => Object.keys(definitionPair[1].properties));
+const passedUserArguments = process.argv.slice(2);
+const swaggerFilePath = passedUserArguments[0];
+const outputFilePath = passedUserArguments[1];
+
+// fs.stat(outputFilePath, (err, stat) => {
+//   if (err) {
+//     return console.log(err);
+//   }
+//
+//   return console.log(stat);
+// });
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 
-  const newDefinitionsCollection = definitionPairs
-    // adds or overwrites the required property of each definition object
-    .map((definitionPair, index) => {
-      const definitionKey = definitionPair[0];
-      const definitionValue = Object.assign({}, definitionPair[1]);
+if (!swaggerFilePath) {
+  console.log('command: sdg <path-to-file-input> <path-to-file-output>');
+} else {
+  SwaggerParser.parse(swaggerFilePath)
+    .then(parsedApi => {
+      const swaggerDoc = parsedApi;
 
-      definitionValue.required = apiProperties[index];
-
-      return [definitionKey, definitionValue];
+      swaggerDoc.definitions = requireAllProperties(swaggerDoc.definitions);
+      return SwaggerParser.dereference(swaggerDoc);
     })
-    .reduce((definitionsObject, definitionPair) => {
-      const key = definitionPair[0];
-      const value = definitionPair[1];
-      const passedDefinitions = definitionsObject;
-      passedDefinitions[key] = value;
+    .catch(err => console.log(err.message))
+    .then(dereferencedApi => {
+      const generatedSwaggerData = {};
 
-      return passedDefinitions;
-    }, {});
+      forEach(dereferencedApi.definitions,
+        (definition, name) => {
+          try {
+            generatedSwaggerData[name] = jsf(definition);
+          } catch (err) {
+            console.log(err);
+          }
+        });
 
-  return newDefinitionsCollection;
-}
+      if (outputFilePath) {
+        rl.question(`content in ${outputFilePath} will be overwritten. continue? (y or n)?`,
+          answer => {
+            if (answer === 'y' || answer === 'Y') {
+              fs.writeSync(fs.openSync(outputFilePath, 'w'),
+                  JSON.stringify(generatedSwaggerData, null, '\t'));
+            } else {
+              rl.write('...Aborting\n');
+            }
 
-SwaggerParser.parse('./samples/PetStore.yaml')
-  .then(api => {
-    const swaggerDoc = api;
-
-    swaggerDoc.definitions = allPropsRequired(swaggerDoc.definitions);
-    return SwaggerParser.dereference(swaggerDoc);
-  })
-  .then(api => {
-    _.forEach(api.definitions, definition => {
-      let temp;
-      try {
-        temp = jsf(definition);
-        console.log('jsf', temp);
-      } catch (err) {
-        console.log(err);
+            rl.close();
+            process.stdin.destroy();
+          });
       }
     });
-  });
+}
+
