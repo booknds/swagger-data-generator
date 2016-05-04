@@ -4,6 +4,10 @@ module.exports = {
         "no-console": [2, { allow: ["log"] }],
         "no-extra-parens": 1,
         "new-cap": 0,
+        "no-var": 0,
+        "prefer-template": 0,
+        "prefer-arrow-callback": 0,
+        "no-use-before-define": 0,
     },
     "env": {
         "es6": false,
