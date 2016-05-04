@@ -43,6 +43,7 @@ function successfulParse(parsedApi) {
   var swaggerDoc = parsedApi;
 
   swaggerDoc.definitions = requireAllProperties(swaggerDoc.definitions);
+
   return SwaggerParser.dereference(swaggerDoc);
 }
 
@@ -52,7 +53,7 @@ function successfulParse(parsedApi) {
  * @param err {Object} - an error object describing the error
  */
 function unSuccessfulParse(err) {
-  console.log(err.message);
+  console.log(err);
 }
 
 /**
