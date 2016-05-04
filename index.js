@@ -4,8 +4,8 @@ const fs = require('fs');
 const readline = require('readline');
 const { forEach } = require('lodash');
 const SwaggerParser = require('swagger-parser');
-const jsf = require('./lib/jsfConfig.js');
-const { requireAllProperties } = require('./lib/utils/helpers.js');
+const jsf = require('../../lib/jsfConfig.js');
+const { requireAllProperties } = require('../../lib/utils/helpers.js');
 
 const passedUserArguments = process.argv.slice(2);
 const swaggerFilePath = passedUserArguments[0];
