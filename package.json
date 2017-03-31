@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/booknds/swagger-data-generator#readme",
   "dependencies": {
+    "argparse": "^1.0.9",
     "json-schema-faker": "^0.3.1",
     "lodash": "^4.11.1",
     "swagger-parser": "^3.4.1"
