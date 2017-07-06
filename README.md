@@ -1,8 +1,11 @@
+## Package no longer actively maintained
+See the [Swagger Data Gen](https://github.com/EricHenry/swagger-data-gen) package for issues and continuing development
+
 # swagger-data-generator
 A command line interface (CLI) to generate mock test data from a Swagger Doc
 
 ## Usage
-Generate a json file filled with mock data of your API from your Swagger/OpenAPI Doc. 
+Generate a json file filled with mock data of your API from your Swagger/OpenAPI Doc.
  - Supports both YAML and JSON Swagger/OpenAPI file formats.
  - Scans the defined definitions and creates the test data based it.
  - creates data for every definition property, not just the required fields.
@@ -20,7 +23,7 @@ $: sdg <path-to-input-file> <path-to-output-file>
  - an API so you can import it and use it in your project.
  - CLI options
     - specify and create multiple random copies of the data
-    - each definition getting its own output file 
+    - each definition getting its own output file
     - option to chose between generating all data or only required data.
 
 
